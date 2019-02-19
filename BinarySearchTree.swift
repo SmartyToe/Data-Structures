@@ -23,17 +23,20 @@ class Node<T>:NSObject
 
 class BinarySearchTree<T:Comparable & CustomStringConvertible>: NSObject {
     
-    
     enum printOrder {
         case inOrder
         case preOrder
         case postOrder
     }
     
-    
+    // tree root node
     private var root:Node<T>?
     
-    func insert(_ root:Node<T>, _ node:Node<T>)
+    
+    // insertation of new node
+    // time complexity in worst case O(n) and in general case O(h)
+    
+    private func insert(_ root:Node<T>, _ node:Node<T>)
     {
         if root.value > node.value {
             if let left = root.leftNode {
@@ -54,6 +57,9 @@ class BinarySearchTree<T:Comparable & CustomStringConvertible>: NSObject {
     func addNode(_ value: T)
     {
         let node = Node(value)
+        
+        // check if subtree has root node
+        // else else assign node to root
         if let root = root{
             insert(root, node)
         }else{
@@ -61,25 +67,58 @@ class BinarySearchTree<T:Comparable & CustomStringConvertible>: NSObject {
         }
     }
     
-    func printTree(_ order:BinarySearchTree.printOrder, root:Node<T>?)
+    func printTree(_ order:BinarySearchTree.printOrder)
+    {
+        printTree(order, root: root)
+    }
+    
+    
+    private func printTree(_ order:BinarySearchTree.printOrder, root:Node<T>?)
     {
         guard let node = root else { return }
 
         switch order {
         case .inOrder:
-            self.printTree(.inOrder, root: node.leftNode)
+            self.printTree(order, root: node.leftNode)
             print(node.value)
-            self.printTree(.inOrder, root: node.rightNode)
+            self.printTree(order, root: node.rightNode)
             
         case .preOrder:
             print(node.value)
-            self.printTree(.preOrder, root: node.leftNode)
-            self.printTree(.preOrder, root: node.rightNode)
+            self.printTree(order, root: node.leftNode)
+            self.printTree(order, root: node.rightNode)
             
         case .postOrder:
-            self.printTree(.postOrder, root: node.leftNode)
-            self.printTree(.postOrder, root: node.rightNode)
+            self.printTree(order, root: node.leftNode)
+            self.printTree(order, root: node.rightNode)
             print(node.value)
+        }
+    }
+}
+
+
+extension BinarySearchTree
+{
+    
+    func search(value:T){
+        search(root, value: value)
+    }
+    
+    private func search(_ root:Node<T>?, value:T){
+       
+        guard let root = root else {
+            print("Couldnt find Node with value of: \(value)")
+            return
+        }
+        
+        if value > root.value {
+            // search right subtree
+            self.search(root.rightNode, value: value)
+        }else if value < root.value {
+            // search left subtree
+            self.search(root.leftNode, value: value)
+        }else{
+            print("find value \(value)")
         }
     }
     
